@@ -5,17 +5,18 @@ import { useMutation } from '@tanstack/react-query'
 import { omit } from 'lodash'
 import { schema, Schema } from 'src/utils/rules'
 import Input from 'src/components/Input'
-// import authApi from 'src/apis/auth.api'
-// import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import { ErrorResponse } from 'src/types/utils.type'
-// import { useContext } from 'react'
-// import { AppContext } from 'src/contexts/app.context'
-// import Button from 'src/components/Button'
+import { authApi } from 'src/api/auth.api'
+import Button from 'src/components/Button'
+import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
+import { useContext } from 'react'
+import { AppContext } from 'src/contexts/app.context'
+import { path } from 'src/constant'
 
 type FormData = Schema
 
 export default function Register() {
-  // const { setIsAuthenticated, setProfile } = useContext(AppContext)
+  const { setIsAuthenticated, setProfile } = useContext(AppContext)
   const navigate = useNavigate()
   const {
     register,
@@ -34,7 +35,7 @@ export default function Register() {
       onSuccess: (data) => {
         setIsAuthenticated(true)
         setProfile(data.data.data.user)
-        navigate('/')
+        navigate(path.home)
       },
       onError: (error) => {
         if (isAxiosUnprocessableEntityError<ErrorResponse<Omit<FormData, 'confirm_password'>>>(error)) {
@@ -43,22 +44,10 @@ export default function Register() {
             Object.keys(formError).forEach((key) => {
               setError(key as keyof Omit<FormData, 'confirm_password'>, {
                 message: formError[key as keyof Omit<FormData, 'confirm_password'>],
-                type: 'Server'
+                type: 'server'
               })
             })
           }
-          // if (formError?.email) {
-          //   setError('email', {
-          //     message: formError.email,
-          //     type: 'Server'
-          //   })
-          // }
-          // if (formError?.password) {
-          //   setError('password', {
-          //     message: formError.password,
-          //     type: 'Server'
-          //   })
-          // }
         }
       }
     })

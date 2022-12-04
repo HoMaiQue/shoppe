@@ -1,12 +1,16 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
+import { ToastContainer } from 'react-toastify'
 import './App.css'
 import useRouteElement from './hooks'
 
 function App() {
   const routElement = useRouteElement()
 
-  return <div>{routElement}</div>
+  return (
+    <div>
+      {routElement}
+      <ToastContainer />
+    </div>
+  )
 }
 
 export default App
