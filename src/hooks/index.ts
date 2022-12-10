@@ -1,3 +1,2 @@
-import useRouteElement from './useRouteElement'
-
-export default useRouteElement
+export * from './useQueryParams'
+export * from './useRouteElement'

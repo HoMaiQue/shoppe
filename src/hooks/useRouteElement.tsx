@@ -18,7 +18,7 @@ const RejectedRoute = () => {
   const { isAuthenticated } = useContext(AppContext)
   return !isAuthenticated ? <Outlet /> : <Navigate to={path.home} />
 }
-export default function useRouteElement() {
+export const useRouteElement = () => {
   const routeElement = useRoutes([
     {
       path: '',
