@@ -3,6 +3,7 @@ import { Navigate, Outlet, useRoutes } from 'react-router-dom'
 import { path } from 'src/constant'
 import { AppContext } from 'src/contexts/app.context'
 import MainLayout from 'src/layouts/MainLayout'
+import NotFound from 'src/pages/NotFound'
 import Profile from 'src/pages/Profile'
 import RegisterLayout from '../layouts/RegisterLayout'
 import Login from '../pages/Login'
@@ -64,6 +65,10 @@ export const useRouteElement = () => {
           <ProductList />
         </MainLayout>
       )
+    },
+    {
+      path: '*',
+      element: <NotFound />
     }
   ])
   return routeElement

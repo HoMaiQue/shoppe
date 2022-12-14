@@ -19,7 +19,7 @@ const ProductList = () => {
       category: queryParams.category,
       exclude: queryParams.exclude,
       name: queryParams.name,
-      limit: queryParams.limit,
+      limit: queryParams.limit || 20,
       order: queryParams.order,
       price_max: queryParams.price_max,
       price_min: queryParams.price_min,
@@ -42,7 +42,7 @@ const ProductList = () => {
               <AsideFilter />
             </div>
             <div className='col-span-9'>
-              <SortProductList />
+              <SortProductList queryConfig={queryConfig} pageSize={data.data.data.pagination.page_size} />
               <div className='md:grid-cols-3:lg:grid-cols-4 mt-6 grid grid-cols-2 gap-3 xl:grid-cols-5'>
                 {data.data.data.products.map((product) => (
                   <div className='col-span-1' key={product._id}>
