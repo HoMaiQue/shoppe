@@ -4,6 +4,7 @@ import { path } from 'src/constant'
 import { AppContext } from 'src/contexts/app.context'
 import MainLayout from 'src/layouts/MainLayout'
 import NotFound from 'src/pages/NotFound'
+import ProductDetail from 'src/pages/ProductDetail'
 import Profile from 'src/pages/Profile'
 import RegisterLayout from '../layouts/RegisterLayout'
 import Login from '../pages/Login'
@@ -30,6 +31,14 @@ export const useRouteElement = () => {
           element: (
             <MainLayout>
               <Profile />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.productDetail,
+          element: (
+            <MainLayout>
+              <ProductDetail />
             </MainLayout>
           )
         }
