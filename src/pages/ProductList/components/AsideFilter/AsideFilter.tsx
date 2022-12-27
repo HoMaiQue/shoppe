@@ -6,12 +6,12 @@ import Input from 'src/components/Input'
 import InputNumber from 'src/components/InputNumber'
 import { path } from 'src/constant'
 import { Category, NoUndefinedField } from 'src/types'
-import { QueryConfig } from '../ProductList'
 import { useForm, Controller } from 'react-hook-form'
 import { Schema, schema } from 'src/utils/rules'
 import { yupResolver } from '@hookform/resolvers/yup'
 import RatingStar from '../RatingStar'
 import { omit } from 'lodash'
+import { QueryConfig } from 'src/hooks'
 interface Props {
   categoryList: Category[]
   queryConfig: QueryConfig

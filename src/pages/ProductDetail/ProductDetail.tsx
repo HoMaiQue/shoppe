@@ -5,11 +5,15 @@ import { useParams } from 'react-router-dom'
 import { productApi } from 'src/api/product.api'
 import InputNumber from 'src/components/InputNumber'
 import ProductRating from 'src/components/ProductRating'
-import { Product } from 'src/types'
-import { formatCurrency, formatNumberToSocialStyle, rateSale } from 'src/utils/utils'
+import QuantityController from 'src/components/QuantityController'
+import { Product as ProductType } from 'src/types'
+import { formatCurrency, formatNumberToSocialStyle, getIdFromNameId, rateSale } from 'src/utils/utils'
+import Product from '../ProductList/components/Product'
 
 export default function ProductDetail() {
-  const { id } = useParams()
+  const [buyCount, setBuyCount] = useState(1)
+  const { nameId } = useParams()
+  const id = getIdFromNameId(nameId as string)
   const { data: dataProductDetail } = useQuery({
     queryKey: ['productDetail', id],
     queryFn: () => productApi.getProductDetail(id as string)
@@ -20,7 +24,13 @@ export default function ProductDetail() {
     () => (productDetail ? productDetail.images.slice(...currentIndexImage) : []),
     [productDetail, currentIndexImage]
   )
-
+  const queryConfig = { limit: 20, page: '1', category: productDetail?.category._id }
+  const { data: productData } = useQuery({
+    queryKey: ['products', queryConfig],
+    queryFn: () => productApi.getProductList(queryConfig),
+    enabled: Boolean(productDetail),
+    staleTime: 3 * 60 * 1000
+  })
   const [activeImage, setActiveImage] = useState('')
   const imageRef = useRef<HTMLImageElement>(null)
   useEffect(() => {
@@ -33,7 +43,7 @@ export default function ProductDetail() {
   }
 
   const handleNext = () => {
-    if (currentIndexImage[1] < (productDetail as Product).images.length) {
+    if (currentIndexImage[1] < (productDetail as ProductType).images.length) {
       setCurrentIndexImage((pre) => [pre[0] + 1, pre[1] + 1])
     }
   }
@@ -65,6 +75,10 @@ export default function ProductDetail() {
   }
   const handleRemoveZoom = () => {
     imageRef.current?.removeAttribute('style')
+  }
+
+  const handleBuyCount = (value: number) => {
+    setBuyCount(value)
   }
   if (!productDetail) return null
   return (
@@ -163,41 +177,20 @@ export default function ProductDetail() {
                   <span className='uppercase text-white'>Giảm</span>
                 </div>
               </div>
+
               <div className='mt-8 flex items-center '>
                 <div className='capitalize text-gray-500'>Số lượng</div>
-                <div className='ml-10 flex items-center '>
-                  <button className='ư-8 flex h-8 items-center justify-center rounded-l-sm border border-gray-300 text-gray-600'>
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      fill='none'
-                      viewBox='0 0 24 24'
-                      strokeWidth={1.5}
-                      stroke='currentColor'
-                      className='h-4 w-4'
-                    >
-                      <path strokeLinecap='round' strokeLinejoin='round' d='M19.5 12h-15' />
-                    </svg>
-                  </button>
-                  <InputNumber
-                    value={1}
-                    classNameError='hidden'
-                    classNameInput='h-8 w-14 border-t border-b border-gray-300 p-1 text-center outline-none '
-                  />
-                  <button className='ư-8 flex h-8 items-center justify-center rounded-r-sm border border-gray-300 text-gray-600'>
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      fill='none'
-                      viewBox='0 0 24 24'
-                      strokeWidth={1.5}
-                      stroke='currentColor'
-                      className='h-4 w-4'
-                    >
-                      <path strokeLinecap='round' strokeLinejoin='round' d='M12 4.5v15m7.5-7.5h-15' />
-                    </svg>
-                  </button>
-                </div>
+                <QuantityController
+                  onDecrease={handleBuyCount}
+                  onIncrease={handleBuyCount}
+                  onType={handleBuyCount}
+                  value={buyCount}
+                  max={productDetail.quantity}
+                />
+
                 <div className='ml-6 text-sm text-gray-500'>{productDetail.quantity} Sản phẩm có sản</div>
               </div>
+
               <div className='mt-8 flex items-center '>
                 <button className='flex h-12 items-center justify-center rounded-sm border border-orange bg-orange/10 px-5 capitalize text-orange shadow-sm hover:bg-orange/5'>
                   <svg
@@ -235,12 +228,28 @@ export default function ProductDetail() {
         </div>
       </div>
 
-      <div className='container'>
-        <div className='mt-8 bg-white px-4 shadow '>
-          <div className='rounded bg-gray-50 p-4 text-lg capitalize text-slate-700'> Mô tả sản phẩm</div>
-          <div className='mx-4 mb-4 mt-12 text-sm leading-loose'>
-            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(productDetail.description) }}></div>
+      <div className='mt-8'>
+        <div className='container'>
+          <div className='mt-8 bg-white px-4 shadow '>
+            <div className='rounded bg-gray-50 p-4 text-lg capitalize text-slate-700'> Mô tả sản phẩm</div>
+            <div className='mx-4 mb-4 mt-12 text-sm leading-loose'>
+              <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(productDetail.description) }}></div>
+            </div>
           </div>
+        </div>
+      </div>
+      <div className='mt-8'>
+        <div className='container'>
+          <div className='uppercase text-gray-400'>Có thể bạn cũng thích</div>
+          {productData && (
+            <div className='mt-6 grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'>
+              {productData.data.data.products.map((product) => (
+                <div className='col-span-1' key={product._id}>
+                  <Product product={product} />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
