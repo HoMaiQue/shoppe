@@ -33,14 +33,6 @@ export const useRouteElement = () => {
               <Profile />
             </MainLayout>
           )
-        },
-        {
-          path: path.productDetail,
-          element: (
-            <MainLayout>
-              <ProductDetail />
-            </MainLayout>
-          )
         }
       ]
     },
@@ -72,6 +64,14 @@ export const useRouteElement = () => {
       element: (
         <MainLayout>
           <ProductList />
+        </MainLayout>
+      )
+    },
+    {
+      path: path.productDetail,
+      element: (
+        <MainLayout>
+          <ProductDetail />
         </MainLayout>
       )
     },
