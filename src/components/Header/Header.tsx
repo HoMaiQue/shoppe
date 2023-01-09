@@ -13,6 +13,7 @@ import { schema, Schema } from 'src/utils/rules'
 import Popover from '../Popover'
 import no_image from '../../assets/image/no_image.png'
 import { formatCurrency } from 'src/utils/utils'
+import { queryClient } from 'src/main'
 type FormData = Pick<Schema, 'name'>
 const searchSchema = schema.pick(['name'])
 const MAX_PURCHASES = 5
@@ -31,11 +32,13 @@ const Header = () => {
     onSuccess: () => {
       setIsAuthenticated(false)
       setProfile(null)
+      queryClient.removeQueries(['purchase', { status: purchaseStatus.inCart }])
     }
   })
   const { data: dataPurchaseList } = useQuery({
     queryKey: ['purchase', { status: purchaseStatus.inCart }],
-    queryFn: () => purchaseApi.getPurchaseList({ status: purchaseStatus.inCart })
+    queryFn: () => purchaseApi.getPurchaseList({ status: purchaseStatus.inCart }),
+    enabled: isAuthenticated
   })
   const purchaseListInCart = dataPurchaseList?.data.data
   const handleLogout = () => {
@@ -204,13 +207,16 @@ const Header = () => {
                           {purchaseListInCart.length > 5 ? purchaseListInCart.length - MAX_PURCHASES : ''} Thêm hàng vào
                           giỏ
                         </div>
-                        <button className='rounded-sm bg-orange px-4 py-2 capitalize text-white hover:bg-opacity-90'>
+                        <Link
+                          to={path.cart}
+                          className='rounded-sm bg-orange px-4 py-2 capitalize text-white hover:bg-opacity-90'
+                        >
                           Xem giỏ hàng
-                        </button>
+                        </Link>
                       </div>
                     </div>
                   ) : (
-                    <div className='flex h-[300px] w-[300px] items-center justify-center p-2'>
+                    <div className='flex h-[300px] w-[300px] flex-col items-center justify-center p-2'>
                       <img src={no_image} alt='no-product' className='h-24 w-24' />
                       <div className='mt-3 capitalize'> Chưa có sản phẩm</div>
                     </div>
@@ -233,9 +239,11 @@ const Header = () => {
                     d='M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z'
                   />
                 </svg>
-                <span className='absolute top-[-5px] left-[17px] rounded-full bg-white px-[9px] py-1 text-xs text-orange  '>
-                  {purchaseListInCart?.length}
-                </span>
+                {purchaseListInCart && (
+                  <span className='absolute top-[-5px] left-[17px] rounded-full bg-white px-[9px] py-1 text-xs text-orange  '>
+                    {purchaseListInCart?.length}
+                  </span>
+                )}
               </Link>
             </Popover>
           </div>
