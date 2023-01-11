@@ -1,24 +1,22 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import React, { useContext, useEffect, useMemo } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import purchaseApi from 'src/apis/purchase.api'
-import Button from 'src/components/Button'
-import QuantityController from 'src/components/QuantityController'
-import path from 'src/constants/path'
-import { purchasesStatus } from 'src/constants/purchase'
-import { Purchase } from 'src/types/purchase.type'
-import { formatCurrency, generateNameId } from 'src/utils/utils'
 import produce from 'immer'
 import keyBy from 'lodash/keyBy'
+import React, { useContext, useEffect, useMemo } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { purchaseApi } from 'src/api/purchase.api'
+import noproduct from 'src/assets/image/no-product.png'
+import Button from 'src/components/Button'
+import QuantityController from 'src/components/QuantityController'
+import { path, purchaseStatus } from 'src/constant'
 import { AppContext } from 'src/contexts/app.context'
-import noproduct from 'src/assets/images/no-product.png'
-
+import { Purchase } from 'src/types/purchase.type'
+import { formatCurrency, generateNameId } from 'src/utils/utils'
 export default function Cart() {
   const { extendedPurchases, setExtendedPurchases } = useContext(AppContext)
   const { data: purchasesInCartData, refetch } = useQuery({
-    queryKey: ['purchases', { status: purchasesStatus.inCart }],
-    queryFn: () => purchaseApi.getPurchases({ status: purchasesStatus.inCart })
+    queryKey: ['purchases', { status: purchaseStatus.inCart }],
+    queryFn: () => purchaseApi.getPurchaseList({ status: purchaseStatus.inCart })
   })
   const updatePurchaseMutation = useMutation({
     mutationFn: purchaseApi.updatePurchase,
@@ -43,7 +41,7 @@ export default function Cart() {
     }
   })
   const location = useLocation()
-  const choosenPurchaseIdFromLocation = (location.state as { purchaseId: string } | null)?.purchaseId
+  const chosenPurchaseIdFromLocation = (location.state as { purchaseId: string } | null)?.purchaseId
   const purchasesInCart = purchasesInCartData?.data.data
   const isAllChecked = useMemo(() => extendedPurchases.every((purchase) => purchase.checked), [extendedPurchases])
   const checkedPurchases = useMemo(() => extendedPurchases.filter((purchase) => purchase.checked), [extendedPurchases])
@@ -68,7 +66,7 @@ export default function Cart() {
       const extendedPurchasesObject = keyBy(prev, '_id')
       return (
         purchasesInCart?.map((purchase) => {
-          const isChoosenPurchaseFromLocation = choosenPurchaseIdFromLocation === purchase._id
+          const isChoosenPurchaseFromLocation = chosenPurchaseIdFromLocation === purchase._id
           return {
             ...purchase,
             disabled: false,
@@ -77,7 +75,7 @@ export default function Cart() {
         }) || []
       )
     })
-  }, [purchasesInCart, choosenPurchaseIdFromLocation])
+  }, [purchasesInCart, chosenPurchaseIdFromLocation])
 
   useEffect(() => {
     return () => {
@@ -161,7 +159,8 @@ export default function Cart() {
                         />
                       </div>
                       <div className='flex-grow text-black'>Sản phẩm</div>
-                    </div>setExtendedPurchases
+                    </div>
+                    setExtendedPurchases
                   </div>
                   <div className='col-span-6'>
                     <div className='grid grid-cols-5 text-center'>

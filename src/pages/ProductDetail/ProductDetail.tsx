@@ -1,13 +1,13 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import DOMPurify from 'dompurify'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { productApi } from 'src/api/product.api'
 import { purchaseApi } from 'src/api/purchase.api'
 import ProductRating from 'src/components/ProductRating'
 import QuantityController from 'src/components/QuantityController'
-import { purchaseStatus } from 'src/constant'
+import { path, purchaseStatus } from 'src/constant'
 import { queryClient } from 'src/main'
 import { Product as ProductType } from 'src/types'
 import { formatCurrency, formatNumberToSocialStyle, getIdFromNameId, rateSale } from 'src/utils/utils'
@@ -35,6 +35,7 @@ export default function ProductDetail() {
     staleTime: 3 * 60 * 1000
   })
   const addToCartMutation = useMutation(purchaseApi.addToCart)
+  const navigate = useNavigate()
   const [activeImage, setActiveImage] = useState('')
   const imageRef = useRef<HTMLImageElement>(null)
   useEffect(() => {
@@ -94,6 +95,11 @@ export default function ProductDetail() {
         }
       }
     )
+  }
+  const handleBuyNow = async () => {
+    const res = await addToCartMutation.mutateAsync({ product_id: productDetail?._id as string, buy_count: buyCount })
+    const purchase = res.data.data
+    navigate(path.cart, { state: { purchaseId: purchase._id } })
   }
   if (!productDetail) return null
   return (
@@ -236,7 +242,10 @@ export default function ProductDetail() {
                   </svg>
                   Thêm vào giỏ hàng
                 </button>
-                <button className='ml-4 flex h-12 min-w-[5rem] items-center justify-center rounded-sm bg-orange px-5 capitalize text-white shadow-sm outline-none hover:bg-orange/90'>
+                <button
+                  onClick={handleBuyNow}
+                  className='ml-4 flex h-12 min-w-[5rem] items-center justify-center rounded-sm bg-orange px-5 capitalize text-white shadow-sm outline-none hover:bg-orange/90'
+                >
                   {' '}
                   Mua ngay
                 </button>
