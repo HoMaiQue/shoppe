@@ -7,7 +7,10 @@ import MainLayout from 'src/layouts/MainLayout'
 import Cart from 'src/pages/cart'
 import NotFound from 'src/pages/NotFound'
 import ProductDetail from 'src/pages/ProductDetail'
-import Profile from 'src/pages/Profile'
+import UserLayout from 'src/pages/User/layouts/UserLayout'
+import ChangePassword from 'src/pages/User/pages/ChangePassword'
+import HistoryPurchase from 'src/pages/User/pages/HistoryPuchase'
+import Profile from 'src/pages/User/pages/Profile'
 import RegisterLayout from '../layouts/RegisterLayout'
 import Login from '../pages/Login'
 import ProductList from '../pages/ProductList'
@@ -29,20 +32,34 @@ export const useRouteElement = () => {
       element: <ProtectedRoute />,
       children: [
         {
-          path: path.profile,
-          element: (
-            <MainLayout>
-              <Profile />
-            </MainLayout>
-          )
-        },
-        {
           path: path.cart,
           element: (
             <CartLayout>
               <Cart />
             </CartLayout>
           )
+        },
+        {
+          path: path.user,
+          element: (
+            <MainLayout>
+              <UserLayout />
+            </MainLayout>
+          ),
+          children: [
+            {
+              path: path.profile,
+              element: <Profile />
+            },
+            {
+              path: path.changePassword,
+              element: <ChangePassword />
+            },
+            {
+              path: path.historyPurchase,
+              element: <HistoryPurchase />
+            }
+          ]
         }
       ]
     },
