@@ -12,7 +12,7 @@ import Popover from '../Popover'
 
 const MAX_PURCHASES = 5
 const Header = () => {
-  const { isAuthenticated } = useContext(AppContext)
+  const { isAuthenticated, profile } = useContext(AppContext)
   const { register, onSubmitSearch } = useSearchProducts()
   const { data: dataPurchaseList } = useQuery({
     queryKey: ['purchase', { status: purchaseStatus.inCart }],

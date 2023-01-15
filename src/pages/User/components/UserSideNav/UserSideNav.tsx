@@ -1,20 +1,18 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { path } from 'src/constant'
-
+import { AppContext } from 'src/contexts/app.context'
+import user_image from 'src/assets/image/user.svg'
 export default function UserSideNav() {
+  const { profile } = useContext(AppContext)
   return (
     <div>
       <div className='flex items-center border-b border-b-gray-200 py-4'>
         <Link to={path.profile} className='h-12 w-12 flex-shrink-0 overflow-hidden rounded-full border border-black/10'>
-          <img
-            src='https://cf.shopee.vn/file/d04ea22afab6e6d250a370d7ccc2e675_tn'
-            alt='avatar'
-            className='h-full w-full object-cover'
-          />
+          <img src={profile?.avatar || user_image} alt='avatar' className='h-full w-full object-cover' />
         </Link>
         <div className='flex-grow pl-4'>
-          <div className='mb-1 truncate font-semibold text-gray-600'>homaique2000</div>
+          <div className='mb-1 truncate font-semibold text-gray-600'>{profile?.name}</div>
           <Link to={path.profile} className='flex items-center capitalize text-gray-500 '>
             <svg
               xmlns='http://www.w3.org/2000/svg'
