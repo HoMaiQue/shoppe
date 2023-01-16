@@ -1,3 +1,5 @@
 export * from './httpCodeStatus.enum'
 export * from './path'
 export * from './purchase'
+export * from './product'
+export * from './config'

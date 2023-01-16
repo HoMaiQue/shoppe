@@ -13,7 +13,7 @@ export const userApi = {
     return http.put<SuccessResponse<User>>('user', body)
   },
   updateLoadAvatar(body: FormData) {
-    return http.post<SuccessResponse<string>>('user/upload', body, {
+    return http.post<SuccessResponse<string>>('user/upload-avatar', body, {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
   }
