@@ -5,5 +5,5 @@ export const purchaseStatus = {
   waitForGetting: 2,
   inProgress: 3,
   delivered: 4,
-  cancel: 5
+  cancelled: 5
 } as const 

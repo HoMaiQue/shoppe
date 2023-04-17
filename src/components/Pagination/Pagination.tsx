@@ -2,7 +2,7 @@ import classNames from 'classnames'
 import React from 'react'
 import { Link, createSearchParams } from 'react-router-dom'
 import { path } from 'src/constant'
-import { QueryConfig } from 'src/pages/ProductList/ProductList'
+import { QueryConfig } from 'src/hooks'
 interface Props {
   queryConfig: QueryConfig
   pageSize: number

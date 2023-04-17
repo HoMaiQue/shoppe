@@ -1,20 +1,22 @@
-import React, { useContext } from 'react'
+import { Suspense, lazy, useContext } from 'react'
 import { Navigate, Outlet, useRoutes } from 'react-router-dom'
 import { path } from 'src/constant'
 import { AppContext } from 'src/contexts/app.context'
 import CartLayout from 'src/layouts/CartLayout'
 import MainLayout from 'src/layouts/MainLayout'
-import Cart from 'src/pages/cart'
-import NotFound from 'src/pages/NotFound'
-import ProductDetail from 'src/pages/ProductDetail'
+import RegisterLayout from 'src/layouts/RegisterLayout'
 import UserLayout from 'src/pages/User/layouts/UserLayout'
-import ChangePassword from 'src/pages/User/pages/ChangePassword'
-import HistoryPurchase from 'src/pages/User/pages/HistoryPuchase'
-import Profile from 'src/pages/User/pages/Profile'
-import RegisterLayout from '../layouts/RegisterLayout'
-import Login from '../pages/Login'
-import ProductList from '../pages/ProductList'
-import Register from '../pages/Register'
+// import NotFound from 'src/pages/NotFound'
+// import ProductDetail from 'src/pages/ProductDetail'
+// import UserLayout from 'src/pages/User/layouts/UserLayout'
+// import ChangePassword from 'src/pages/User/pages/ChangePassword'
+// import HistoryPurchase from 'src/pages/User/pages/HistoryPuchase'
+// import Profile from 'src/pages/User/pages/Profile'
+// import Cart from 'src/pages/cart'
+// import RegisterLayout from '../layouts/RegisterLayout'
+// import Login from '../pages/Login'
+// import ProductList from '../pages/ProductList'
+// import Register from '../pages/Register'
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useContext(AppContext)
@@ -25,6 +27,16 @@ const RejectedRoute = () => {
   const { isAuthenticated } = useContext(AppContext)
   return !isAuthenticated ? <Outlet /> : <Navigate to={path.home} />
 }
+
+const Login = lazy(() => import('../pages/Login'))
+const ProductList = lazy(() => import('../pages/ProductList'))
+const Profile = lazy(() => import('../pages/User/pages/Profile'))
+const Register = lazy(() => import('../pages/Register'))
+const ProductDetail = lazy(() => import('../pages/ProductDetail'))
+const Cart = lazy(() => import('../pages/Cart'))
+const ChangePassword = lazy(() => import('../pages/User/pages/ChangePassword'))
+const HistoryPurchase = lazy(() => import('../pages/User/pages/HistoryPurchase'))
+const NotFound = lazy(() => import('../pages/NotFound'))
 export const useRouteElement = () => {
   const routeElement = useRoutes([
     {
@@ -35,7 +47,9 @@ export const useRouteElement = () => {
           path: path.cart,
           element: (
             <CartLayout>
-              <Cart />
+              <Suspense>
+                <Cart />
+              </Suspense>
             </CartLayout>
           )
         },
@@ -49,15 +63,27 @@ export const useRouteElement = () => {
           children: [
             {
               path: path.profile,
-              element: <Profile />
+              element: (
+                <Suspense>
+                  <Profile />
+                </Suspense>
+              )
             },
             {
               path: path.changePassword,
-              element: <ChangePassword />
+              element: (
+                <Suspense>
+                  <ChangePassword />
+                </Suspense>
+              )
             },
             {
               path: path.historyPurchase,
-              element: <HistoryPurchase />
+              element: (
+                <Suspense>
+                  <HistoryPurchase />
+                </Suspense>
+              )
             }
           ]
         }
@@ -71,7 +97,9 @@ export const useRouteElement = () => {
           path: path.login,
           element: (
             <RegisterLayout>
-              <Login />
+              <Suspense>
+                <Login />
+              </Suspense>
             </RegisterLayout>
           )
         },
@@ -79,7 +107,9 @@ export const useRouteElement = () => {
           path: path.register,
           element: (
             <RegisterLayout>
-              <Register />
+              <Suspense>
+                <Register />
+              </Suspense>
             </RegisterLayout>
           )
         }
@@ -90,7 +120,9 @@ export const useRouteElement = () => {
       index: true,
       element: (
         <MainLayout>
-          <ProductList />
+          <Suspense>
+            <ProductList />
+          </Suspense>
         </MainLayout>
       )
     },
@@ -98,13 +130,21 @@ export const useRouteElement = () => {
       path: path.productDetail,
       element: (
         <MainLayout>
-          <ProductDetail />
+          <Suspense>
+            <ProductDetail />
+          </Suspense>
         </MainLayout>
       )
     },
     {
       path: '*',
-      element: <NotFound />
+      element: (
+        <MainLayout>
+          <Suspense>
+            <NotFound />
+          </Suspense>
+        </MainLayout>
+      )
     }
   ])
   return routeElement

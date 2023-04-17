@@ -1,18 +1,17 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { Omit } from 'lodash'
-import { useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { useForm, Controller } from 'react-hook-form'
+import { useContext, useEffect, useMemo, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { userApi } from 'src/api/user.api'
 import Button from 'src/components/Button'
 import Input from 'src/components/Input'
+import InputFile from 'src/components/InputFile'
 import InputNumber from 'src/components/InputNumber'
-import { config } from 'src/constant'
 import { AppContext } from 'src/contexts/app.context'
 import { ErrorResponse } from 'src/types'
 import { setProfileToLS } from 'src/utils'
-import { userSchema, UserSchema } from 'src/utils/rules'
+import { UserSchema, userSchema } from 'src/utils/rules'
 import { getAvatarUrl, isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import DateSelect from '../../components/DateSelect'
 
@@ -21,7 +20,7 @@ type FormDataError = Omit<FormData, 'date_of_birth'> & { date_of_birth?: string 
 const profileSchema = userSchema.pick(['name', 'address', 'phone', 'date_of_birth', 'avatar'])
 export function Profile() {
   const { setProfile } = useContext(AppContext)
-  const inputRef = useRef<HTMLInputElement>(null)
+
   const [file, setFile] = useState<File>()
   const previewImage = useMemo(() => {
     return file ? URL.createObjectURL(file) : ''
@@ -87,16 +86,9 @@ export function Profile() {
     }
   })
   const avatar = watch('avatar')
-  const handleUpload = () => {
-    inputRef.current?.click()
-  }
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const fileFromLocal = e.target.files?.[0]
-    if (fileFromLocal && (fileFromLocal?.size >= config.maxSizeUploadAvatar || !fileFromLocal.type.includes('image'))) {
-      toast.error('File không đúng  định dạng quy định', { autoClose: 2000 })
-    } else {
-      setFile(fileFromLocal)
-    }
+
+  const handleChangeFile = (file?: File) => {
+    setFile(file)
   }
   useEffect(() => {
     if (profile) {
@@ -202,23 +194,7 @@ export function Profile() {
                   alt='avatar'
                 />
               </div>
-              <input
-                ref={inputRef}
-                type='file'
-                accept='.jpg,.jpeg,.png'
-                className='hidden'
-                id='avatar_image'
-                onChange={handleFileChange}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                onClick={(e) => ((e.target as any).value = null)}
-              />
-              <button
-                onClick={handleUpload}
-                type='button'
-                className='flex h-10 items-center justify-end rounded-sm border bg-white px-6 text-sm text-gray-600 shadow-sm'
-              >
-                Chọn ảnh
-              </button>
+              <InputFile onChange={handleChangeFile} />
               <div className='mt-3 text-gray-400'>
                 <div> Dung lượng file tối đa 1MB</div>
                 <div>Định dạng:.JPEG, .PNG</div>

@@ -160,7 +160,7 @@ export default function Cart() {
                       </div>
                       <div className='flex-grow text-black'>Sản phẩm</div>
                     </div>
-                    setExtendedPurchases
+                   
                   </div>
                   <div className='col-span-6'>
                     <div className='grid grid-cols-5 text-center'>

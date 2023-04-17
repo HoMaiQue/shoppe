@@ -1,17 +1,16 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import classNames from 'classnames'
-import React from 'react'
+import omit from 'lodash/omit'
+import { Controller, useForm } from 'react-hook-form'
 import { createSearchParams, Link, useNavigate } from 'react-router-dom'
 import Button from 'src/components/Button'
-import Input from 'src/components/Input'
 import InputNumber from 'src/components/InputNumber'
 import { path } from 'src/constant'
-import { Category, NoUndefinedField } from 'src/types'
-import { useForm, Controller } from 'react-hook-form'
-import { Schema, schema } from 'src/utils/rules'
-import { yupResolver } from '@hookform/resolvers/yup'
-import RatingStar from '../RatingStar'
-import { omit } from 'lodash'
 import { QueryConfig } from 'src/hooks'
+import { Category, NoUndefinedField } from 'src/types'
+import { Schema, schema } from 'src/utils/rules'
+import RatingStar from '../RatingStar'
+import { useTranslation } from 'react-i18next'
 interface Props {
   categoryList: Category[]
   queryConfig: QueryConfig
@@ -20,6 +19,7 @@ interface Props {
 type FormData = NoUndefinedField<Pick<Schema, 'price_max' | 'price_min'>>
 const priceScheme = schema.pick(['price_max', 'price_min'])
 export default function AsideFilter({ queryConfig, categoryList }: Props) {
+  const { t } = useTranslation('home')
   const { category } = queryConfig
   const {
     control,
@@ -78,7 +78,7 @@ export default function AsideFilter({ queryConfig, categoryList }: Props) {
             </g>
           </g>
         </svg>
-        Tất cả danh mục
+        {t('aside filter.all categories')}
       </Link>
       <div className='my-4 h-[1px] bg-gray-300' />
       <ul>
